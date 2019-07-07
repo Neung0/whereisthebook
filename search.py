@@ -6,6 +6,15 @@ from bs4 import BeautifulSoup as BS
 from kyobo import chk_stock as KB
 from yp import chk_stock as YP
 
+def book_info(soup):
+    con = soup.find('div', {'class':'book_info'})
+    inner = soup.select('.book_info_inner > div')[1]
+    title = con.select_one('h2 > a')
+    img = con.select_one('.thumb_type img')['src']
+    auth = inner.select('a')[0]
+    pub = inner.select('a')[1]
+    info = [title.text, auth.text, pub.text, img]
+    return info
 
 def get_store_url(name):
     s_url = soup.find('a', string=name)['href']
@@ -38,7 +47,6 @@ def select_store(num):
         for i, j in zip(store[1:], num):
             stock[i.text] = j.text
         print(stock)
-
 
 def search_engine(txt):
     # 네이버 도서에서 해당 책 검색하는 URL
