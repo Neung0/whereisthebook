@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 
 def chk_stock(soup):
     stock = {}
-    store = soup.select('.tb_store strong')
-    num = soup.select('.tb_store span')
+    store = soup.select('table.tb_store strong')
+    num = soup.select('table.tb_store span')
     for i, j in zip(store, num):
         stock[i.text] = j.text
     return stock

@@ -1,7 +1,6 @@
 import re
 import requests
 from urllib import parse
-from selenium import webdriver
 from bs4 import BeautifulSoup as BS
 from kyobo import chk_stock as KB
 from yp import chk_stock as YP
@@ -49,19 +48,13 @@ def select_store(num):
 def search_engine(txt):
     # 네이버 도서에서 해당 책 검색하는 URL
     url = 'https://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=&where=nexearch&query=' + txt
-    driver.get(url)
-    # 첫번째 검색된 책의 url 추출
-    b_url = driver.find_element_by_xpath('//*[@id="searchBiblioList"]/li[1]/dl/dt/a').get_attribute('href')
-    driver.get(b_url)
-    soup = BS(driver.page_source, 'html.parser')
+    req = requests.get(url)
+    soup = BS(req.text, 'html.parser')
+    first = soup.select_one('dt > a')['href'] # 첫 번째로 검색된 책 URL
+    print(first)
+    req = requests.get(first)
+    soup = BS(req.text, 'html.parser')
     return soup
-
-# headless 위한 옵션 설정 > headless를 사용하면 mixced content 오류가 뜸
-options = webdriver.ChromeOptions()
-# options.add_argument('headless')
-# options.add_argument('window-size=1920x1080')
-# options.add_argument('disable-gpu')
-driver = webdriver.Chrome(r'C:\Users\smddu\Documents\chromedriver\chromedriver.exe', chrome_options=options)
 
 txt = input('도서명을 입력하세요 : ')
 soup = search_engine(txt)
